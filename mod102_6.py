@@ -53,17 +53,19 @@ dt = 0.1    #seconds
 time_steps = 10
 r = 0.125   #this is a diffusion parameter
 
+old_temp_bc = temp_bc
 for k in range(0,time_steps):
     for i in range(1,m-2):
         for j in range(1,n-2):
-            delta_sum = get_delta_sum(i,j,temp_bc)
+            delta_sum = get_delta_sum(i,j,old_temp_bc)
             tmp = (1-8*r)*temp_bc[i,j] + r*delta_sum
             temp_bc[i,j]=tmp
-    new_temp = side_set('n', cold, temp)
-    new_temp = side_set('s', cold, new_temp)
-    new_temp = side_set('w', cold, temp)
-    new_temp = side_set('e', cold, new_temp)
-    temp_bc = boundary_reflect(temp_bc)
+    old_temp_bc = temp_bc
+    #temp_bc = side_set('n', cold, temp_bc)
+    #temp_bc = side_set('s', cold, temp_bc)
+    #temp_bc = side_set('w', cold, temp_bc)
+    #temp_bc = side_set('e', cold, temp_bc)
+    #temp_bc = boundary_reflect(temp_bc)
 
 #temp_bc = boundary_reflect(temp_bc)
 

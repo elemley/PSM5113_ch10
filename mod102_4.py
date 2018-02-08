@@ -126,8 +126,8 @@ new_temp=side_set('w',medium,temp)
 new_temp=side_set('e',cold,new_temp)
 
 temp_bc = new_temp
-temp_bc = boundary_reflect(new_temp)
-#temp_bc = boundary_donut(temp)
+#temp_bc = boundary_reflect(new_temp)
+temp_bc = boundary_donut(temp)
 
 rectangle = plt.Rectangle((0.5,0.5),n-2,m-2,fc='none')
 plt.gca().add_patch(rectangle)
