@@ -5,6 +5,45 @@ from psm_plot import *
 from boundary import *
 from random import *
 
+def initBar(m,n,init_temp,hot, hotSites, cold, coldSites):
+    grid = np.empty(shape=(m, n))
+    for i in range(0, m):  # set initial temps
+        for j in range(0, n):
+            grid[i, j] = init_temp
+    new_grid = applyHotCold(grid,hot, hotSites,cold, coldSites)
+    return new_grid
+
+def applyHotCold(grid,hot, hotSites, cold, coldSites):
+    new_grid = grid
+    for i in range(0,len(hotSites)):
+        new_grid[hotSites[i]]=hot
+    for i in range(0, len(coldSites)):
+        new_grid[coldSites[i]] = cold
+    return new_grid
+
+
+m = 10
+n = 30
+hot = 50.0
+cold = 0.0
+ambient = 25.0
+
+hot_list = [(4,0),(5,0),(0,24)]
+cold_list = [(m-1,9),(m-1,10)]
+
+temp = initBar(m,n,ambient,hot,hot_list,cold,cold_list)
+
+print temp
+#rectangle = plt.Rectangle((0.5,0.5),n-2,m-2,fc='none')
+#plt.gca().add_patch(rectangle)
+plt.imshow(temp, cmap='hot', interpolation='nearest')
+plt.show()
+
+
+
+
+"""
+
 def get_delta_sum(x,y,grid):
     summ = 0.0
     for i in range(x-1,x+2):
@@ -50,22 +89,20 @@ temp_bc = boundary_reflect(new_temp)
 
 t = 0.0
 dt = 0.1    #seconds
-time_steps = 50
+time_steps = 10
 r = 0.125   #this is a diffusion parameter
 
-old_temp_bc = temp_bc
 for k in range(0,time_steps):
     for i in range(1,m-2):
         for j in range(1,n-2):
-            delta_sum = get_delta_sum(i,j,old_temp_bc)
-            tmp = (1-8*r)*old_temp_bc[i,j] + r*delta_sum
+            delta_sum = get_delta_sum(i,j,temp_bc)
+            tmp = (1-8*r)*temp_bc[i,j] + r*delta_sum
             temp_bc[i,j]=tmp
-    old_temp_bc = temp_bc
-    #temp_bc = side_set('n', cold, temp_bc)
-    #temp_bc = side_set('s', cold, temp_bc)
-    #temp_bc = side_set('w', cold, temp_bc)
-    #temp_bc = side_set('e', cold, temp_bc)
-    #temp_bc = boundary_reflect(temp_bc)
+    new_temp = side_set('n', cold, temp)
+    new_temp = side_set('s', cold, new_temp)
+    new_temp = side_set('w', cold, temp)
+    new_temp = side_set('e', cold, new_temp)
+    temp_bc = boundary_reflect(temp_bc)
 
 #temp_bc = boundary_reflect(temp_bc)
 
@@ -90,3 +127,4 @@ plt.show()
 
 
 
+"""
