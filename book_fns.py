@@ -40,36 +40,49 @@ def reflectingLat(grid):
                 new_grid[i, j] = 0
             else:
                 new_grid[i,j] = grid[i-1,j-1]
-    #print new_grid
-    #final_grid = boundary_reflect(new_grid)
-    final_grid = new_grid
+
+    final_grid = boundary_reflect(new_grid)
+    #final_grid = new_grid
     return final_grid
 
+def applydiffusionextended(diff_rate, grid):
+    #apply diffusion to internal cells only
+    m = len(grid)
+    n= len(grid[0])
+    new_grid = np.empty(shape=(m-2, n-2))
+    m = len(new_grid)
+    n = len(new_grid[0])
+    for i in range(0, m):  # set initial temps
+        for j in range(0, n):
+            new_grid[i,j]=diffusion(diff_rate,i+1,j+1,grid)
+    return new_grid
 
-m = 5
-n = 10
-hot = 50.0
-cold = 0.0
-ambient = 25.0
+def diffusionSim(m,n,diff_rate,t):
+    hot = 50.0
+    cold = 0.0
+    ambient = 25.0
 
-hot_list = [(3,0),(4,0),(0,4)]
-cold_list = [(4,8),(4,9)]
+    hot_list = [(4, 0), (5, 0), (0, 24)]
+    cold_list = [(m - 1, 9), (m - 1, 10)]
 
+    temp = initBar(m, n, ambient, hot, hot_list, cold, cold_list)
+    for step in range(0,t):
+        new_temp = reflectingLat(temp)
+        temp = applydiffusionextended(diff_rate,new_temp)
+        temp = applyHotCold(temp,hot,hot_list,cold,cold_list)
+    return temp
 
-#hot_list = [(4,0),(5,0),(0,24)]
-#cold_list = [(m-1,9),(m-1,10)]
+m = 10
+n = 30
+t_steps = 100
+diff_rate = 0.125
 
-temp = initBar(m,n,ambient,hot,hot_list,cold,cold_list)
+temp = diffusionSim(m,n,diff_rate,t_steps)
 
-#num = diffusion(0.125,4,1,temp)
-
-temp_ghost = reflectingLat(temp)
-
-
-print temp_ghost
+print temp
 #rectangle = plt.Rectangle((0.5,0.5),n-2,m-2,fc='none')
 #plt.gca().add_patch(rectangle)
-plt.imshow(temp_ghost, cmap='hot', interpolation='nearest')
+plt.imshow(temp, cmap='hot', interpolation='nearest')
 plt.show()
 
 

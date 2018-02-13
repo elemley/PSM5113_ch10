@@ -52,6 +52,45 @@ def boundary_absorb(val,grid):
     return grid
 
 def boundary_reflect(grid):
+    m = len(grid)
+    n = len(grid[0])
+    new_grid = grid
+    for i in range(0, m):
+        for j in range(0, n):
+            if i == 0 and j == 0:   #This if/elif takes care of the corners
+                k = 1
+                l = 1
+            elif i==0 and j==n-1:
+                k = 1
+                l = n-2
+            elif i == m-1 and j == 0:
+                k = m-2
+                l = 1
+            elif i == m-1 and j == n-1:
+                k = m-2
+                l = n-2
+            else:               #This else takes care of the edges
+                if i == 0:
+                    k = 1
+                    l = j
+                elif j == 0:
+                    k = i
+                    l = 1
+                elif i == m-1:
+                    k = m-2
+                    l = j
+                elif j == n-1:
+                    k = i
+                    l = n-2
+                else:
+                    k = i
+                    l = j
+            new_grid[i, j] = new_grid[k,l]
+    return new_grid
+
+
+
+def boundary_reflect_old(grid):
     rows = len(grid)
     cols = len(grid[0])
     new_grid = grid
