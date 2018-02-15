@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 from psm_plot import *
 from boundary import *
 from random import *
+from matplotlib.colors import LinearSegmentedColormap
 
 def initBar(m,n,init_temp,hot, hotSites, cold, coldSites):
     grid = np.empty(shape=(m, n))
@@ -74,15 +75,31 @@ def diffusionSim(m,n,diff_rate,t):
 
 m = 10
 n = 30
-t_steps = 100
+t_steps = 10
 diff_rate = 0.125
 
 temp = diffusionSim(m,n,diff_rate,t_steps)
+#hot = 50.0
+#cold = 0.0
+#ambient = 25.0
+
+#hot_list = [(4, 0), (5, 0), (0, 24)]
+#cold_list = [(m - 1, 9), (m - 1, 10)]
+
+#temp = initBar(m, n, ambient, hot, hot_list, cold, cold_list)
+
+#num = diffusion(diff_rate,8,10,temp)
+
+#temp = reflectingLat(temp)
 
 print temp
 #rectangle = plt.Rectangle((0.5,0.5),n-2,m-2,fc='none')
 #plt.gca().add_patch(rectangle)
-plt.imshow(temp, cmap='hot', interpolation='nearest')
+
+cmap1 = LinearSegmentedColormap.from_list("my_map",((0,0,1),(1,0,0)),256)
+plt.imshow(temp, cmap=cmap1, interpolation='nearest')
+
+#plt.imshow(temp, cmap='hot', interpolation='nearest')
 plt.show()
 
 
