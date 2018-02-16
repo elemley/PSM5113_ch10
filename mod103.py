@@ -5,6 +5,7 @@ from matplotlib.colors import LinearSegmentedColormap
 from psm_plot import *
 from boundary import *
 from random import *
+from time_step_scrolling import *
 
 EMPTY = 0
 TREE = 1
@@ -55,16 +56,16 @@ def applyExtended(grid):
             new_grid = spread(site,N,E,S,W)
     return new_grid
 
-
-t = 10
+t = 4
 n = 50
+probBurning = 0.005
 probTree = 0.8
-probBurning = 0.05
-probImmune = 0.10
-probLightning = 0.001
+probImmune = 0.25
+probLightning = 0.00001
 
 forest = initForest(n, probTree, probBurning)
 forestExtended = boundary_donut(forest)
+
 grids = []
 grids.append(forestExtended)
 
@@ -80,13 +81,22 @@ plt.gca().add_patch(rectangle)
 
 cmap1 = LinearSegmentedColormap.from_list("my_map", ((0, 0, 0), (0, 1, 0), (1, 0, 0)), 3)
 
-print grids[t-1]
+axes = AxesSequence()
+for i, ax in zip(range(n), axes):
+    ax.imshow(grids[i], cmap=cmap1, interpolation='nearest')
+    title_string = 'Time Step '+ str(i)
+    ax.set_title(title_string.format(i))
+axes.show()
 
-
+"""
 for i in range(0, t):
     plt.imshow(grids[i], cmap=cmap1, interpolation='nearest')
     plt.show()
+"""
 
+
+#plt.imshow(forestExtended, cmap=cmap1, interpolation='nearest')
+#plt.show()
 
 
 
