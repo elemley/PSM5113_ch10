@@ -26,7 +26,7 @@ def initForest(n,probTree,probBurning):
                 forest[i, j] = EMPTY
     return forest
 
-def spread(site,N,E,S,W):
+def spread(site,N,E,S,W,probLightning,probImmune):
     if (site==EMPTY) or (site==BURNING):
         tmp = EMPTY
     elif (site==TREE) and ((N==BURNING) or (E==BURNING) or (S==BURNING)or (W==BURNING)):
@@ -43,7 +43,7 @@ def spread(site,N,E,S,W):
         tmp = TREE
     return tmp
 
-def applyExtended(grid):
+def applyExtended(grid,probLightning,probImmune):
     new_grid = grid
     n = len(new_grid)
     for i in range(1,n-1):
@@ -53,12 +53,21 @@ def applyExtended(grid):
             E = grid[i,j+1]
             S = grid[i+1,j]
             W = grid[i,j-1]
-            new_grid = spread(site,N,E,S,W)
+            new_grid = spread(site,N,E,S,W,probLightning,probImmune)
     return new_grid
 
-t = 4
-n = 50
-probBurning = 0.005
+def setForest(grid):
+    n = len(grid)
+    new_grid = np.empty(shape=(n-2, n-2))
+    for i in range(0,n-2):
+        for j in range(0,n-2):
+            new_grid[i,j]=grid[i+1,j+1]
+    return new_grid
+
+
+t = 3
+n = 15
+probBurning = 0.05
 probTree = 0.8
 probImmune = 0.25
 probLightning = 0.00001
@@ -70,17 +79,40 @@ grids = []
 grids.append(forestExtended)
 
 for i in range(0, t):
-    forestExtended = boundary_donut(forest)
-    forestExtended = applyExtended(forestExtended)
-    grids.append(forestExtended)
+    forest = setForest(forestExtended)  #set internal cells to current state
+    old_forestExtended = boundary_donut(forest) #reset boundaries to donut condition
+    new_forestExtended = applyExtended(old_forestExtended,probLightning,probImmune)
+    grids.append(new_forestExtended)
+
+#print forestExtended
 
 # print forest
-
 rectangle = plt.Rectangle((0.5, 0.5), n-2, n-2, fc='none')
 plt.gca().add_patch(rectangle)
 
 cmap1 = LinearSegmentedColormap.from_list("my_map", ((0, 0, 0), (0, 1, 0), (1, 0, 0)), 3)
 
+ax1 = plt.subplot(311)
+plt.imshow(grids[0], cmap=cmap1, interpolation='nearest')
+
+ax2 = plt.subplot(312, sharex=ax1)
+plt.imshow(grids[1], cmap=cmap1, interpolation='nearest')
+
+ax3 = plt.subplot(313, sharex=ax1)
+plt.imshow(grids[2], cmap=cmap1, interpolation='nearest')
+
+plt.show()
+
+"""
+
+
+#plt.imshow(forestExtended, cmap=cmap1, interpolation='nearest')
+#plt.show()
+
+
+"""
+
+"""
 axes = AxesSequence()
 for i, ax in zip(range(n), axes):
     ax.imshow(grids[i], cmap=cmap1, interpolation='nearest')
@@ -89,15 +121,3 @@ for i, ax in zip(range(n), axes):
 axes.show()
 
 """
-for i in range(0, t):
-    plt.imshow(grids[i], cmap=cmap1, interpolation='nearest')
-    plt.show()
-"""
-
-
-#plt.imshow(forestExtended, cmap=cmap1, interpolation='nearest')
-#plt.show()
-
-
-
-
