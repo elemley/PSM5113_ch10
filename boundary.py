@@ -1,3 +1,14 @@
+import numpy as np
+
+def grid_copy(grid):
+    n=len(grid)
+    m=len(grid[0])
+    new_grid = np.empty(shape=(n, m))
+    for i in range(0,n):
+        for j in range(0,m):
+            new_grid[i,j]=grid[i,j]
+    return new_grid
+
 def boundary_set(side,val,grid):
     if side == "w":
         c = 0
@@ -54,7 +65,7 @@ def boundary_absorb(val,grid):
 def boundary_reflect(grid):
     m = len(grid)
     n = len(grid[0])
-    new_grid = grid
+    new_grid = grid_copy(grid)
     for i in range(0, m):
         for j in range(0, n):
             if i == 0 and j == 0:   #This if/elif takes care of the corners
@@ -93,7 +104,7 @@ def boundary_reflect(grid):
 def boundary_reflect_old(grid):
     rows = len(grid)
     cols = len(grid[0])
-    new_grid = grid
+    new_grid = grid_copy(grid)
     west = new_grid[1,1]
     east = new_grid[1,cols-2]
     north = new_grid[1,2]
@@ -114,9 +125,11 @@ def boundary_reflect_old(grid):
     return new_grid
 
 def boundary_donut(grid):
+    #takes an nxn grid and returns an (n+2)x(n+2) grid with toroidal BC's applied
     rows = len(grid)
     cols = len(grid[0])
-    new_grid = grid
+
+    new_grid = grid_copy(grid)
     for i in range(0,rows): #west
         new_grid[i,0]=grid[i,cols-2]
     for i in range(0,rows): #east

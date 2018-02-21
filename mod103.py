@@ -11,6 +11,63 @@ EMPTY = 0
 TREE = 1
 BURNING = 2
 
+def main():
+    t = 1
+    n = 10
+    probBurning = 0.05
+    probTree = 0.8
+    probImmune = 0.25
+    probLightning = 0.00001
+
+    forest = initForest(n, probTree, probBurning)   #forest is nxn
+    print forest
+    forestExtended = boundary_donut(forest)         #forestExtended is (n+2)x(n+2)
+    print forestExtended
+
+    grids = []
+    grids.append(forestExtended)    #Each item in grids is (n+2)x(n+2)
+    print grids[0]
+
+    for i in range(0, t):
+        forest = setForest(forestExtended)  # set internal cells to current state
+        print forest
+        old_forestExtended = boundary_donut(forest)  # reset boundaries to donut condition
+        print old_forestExtended
+        new_forestExtended = applyExtended(old_forestExtended, probLightning, probImmune)
+        print new_forestExtended
+
+        grids.append(new_forestExtended)
+
+    print grids[1]
+
+    rectangle = plt.Rectangle((0.5, 0.5), n - 2, n - 2, fc='none')
+    plt.gca().add_patch(rectangle)
+    axes = AxesSequence()
+    cmap1 = LinearSegmentedColormap.from_list("my_map", ((0, 0, 0), (0, 1, 0), (1, 0, 0)), 3)
+    for i, ax in zip(range(t), axes):
+        ax.imshow(grids[i-1], cmap=cmap1, interpolation='nearest')
+        ax.set_title('Time Step '.str(i))
+    axes.show()
+
+"""
+    # print forest
+    rectangle = plt.Rectangle((0.5, 0.5), n - 2, n - 2, fc='none')
+    plt.gca().add_patch(rectangle)
+
+    cmap1 = LinearSegmentedColormap.from_list("my_map", ((0, 0, 0), (0, 1, 0), (1, 0, 0)), 3)
+
+    ax1 = plt.subplot(311)
+    plt.imshow(grids[0], cmap=cmap1, interpolation='nearest')
+
+    ax2 = plt.subplot(312, sharex=ax1)
+    plt.imshow(grids[1], cmap=cmap1, interpolation='nearest')
+
+    ax3 = plt.subplot(313, sharex=ax1)
+    plt.imshow(grids[2], cmap=cmap1, interpolation='nearest')
+
+    plt.show()
+"""
+
 def initForest(n,probTree,probBurning):
     forest = np.empty(shape=(n,n))
     for i in range(0,n):
@@ -44,7 +101,7 @@ def spread(site,N,E,S,W,probLightning,probImmune):
     return tmp
 
 def applyExtended(grid,probLightning,probImmune):
-    new_grid = grid
+    new_grid = grid_copy(grid)
     n = len(new_grid)
     for i in range(1,n-1):
         for j in range(1,n-1):
@@ -65,43 +122,6 @@ def setForest(grid):
     return new_grid
 
 
-t = 3
-n = 15
-probBurning = 0.05
-probTree = 0.8
-probImmune = 0.25
-probLightning = 0.00001
-
-forest = initForest(n, probTree, probBurning)
-forestExtended = boundary_donut(forest)
-
-grids = []
-grids.append(forestExtended)
-
-for i in range(0, t):
-    forest = setForest(forestExtended)  #set internal cells to current state
-    old_forestExtended = boundary_donut(forest) #reset boundaries to donut condition
-    new_forestExtended = applyExtended(old_forestExtended,probLightning,probImmune)
-    grids.append(new_forestExtended)
-
-#print forestExtended
-
-# print forest
-rectangle = plt.Rectangle((0.5, 0.5), n-2, n-2, fc='none')
-plt.gca().add_patch(rectangle)
-
-cmap1 = LinearSegmentedColormap.from_list("my_map", ((0, 0, 0), (0, 1, 0), (1, 0, 0)), 3)
-
-ax1 = plt.subplot(311)
-plt.imshow(grids[0], cmap=cmap1, interpolation='nearest')
-
-ax2 = plt.subplot(312, sharex=ax1)
-plt.imshow(grids[1], cmap=cmap1, interpolation='nearest')
-
-ax3 = plt.subplot(313, sharex=ax1)
-plt.imshow(grids[2], cmap=cmap1, interpolation='nearest')
-
-plt.show()
 
 """
 
@@ -121,3 +141,5 @@ for i, ax in zip(range(n), axes):
 axes.show()
 
 """
+if __name__ == '__main__':
+    main()
