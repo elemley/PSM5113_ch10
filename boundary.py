@@ -9,6 +9,34 @@ def grid_copy(grid):
             new_grid[i,j]=grid[i,j]
     return new_grid
 
+def grid_copy_add_ghost(grid):
+    m=len(grid)
+    n=len(grid[0])
+    new_grid = np.empty(shape=(m+2, n+2))
+    for i in range(0,m+2):
+        for j in range(0,n+2):
+            if i == 0 or i == m+1 or j == 0 or j == n+1:
+                new_grid[i, j] = 0.0
+            else:
+                new_grid[i, j] = grid[i - 1, j - 1]
+    return new_grid
+
+def boundary_donut(grid):
+    #takes an nxn grid and returns an (n+2)x(n+2) grid with toroidal BC's applied
+    new_grid = grid_copy_add_ghost(grid)
+    rows = len(grid)
+    cols = len(grid[0])
+    for i in range(0,rows): #west
+        new_grid[i,0]=grid[i,cols-2]
+    for i in range(0,rows): #east
+        new_grid[i,cols-1]=grid[i,1]
+    for i in range(0, cols): #north
+        new_grid[0, i] = grid[rows-2, i]
+    for i in range(0, cols): #south
+        new_grid[rows-1, i] = grid[1, i]
+    return new_grid
+
+
 def boundary_set(side,val,grid):
     if side == "w":
         c = 0
@@ -124,18 +152,3 @@ def boundary_reflect_old(grid):
 
     return new_grid
 
-def boundary_donut(grid):
-    #takes an nxn grid and returns an (n+2)x(n+2) grid with toroidal BC's applied
-    rows = len(grid)
-    cols = len(grid[0])
-
-    new_grid = grid_copy(grid)
-    for i in range(0,rows): #west
-        new_grid[i,0]=grid[i,cols-2]
-    for i in range(0,rows): #east
-        new_grid[i,cols-1]=grid[i,1]
-    for i in range(0, cols): #north
-        new_grid[0, i] = grid[rows-2, i]
-    for i in range(0, cols): #south
-        new_grid[rows-1, i] = grid[1, i]
-    return new_grid

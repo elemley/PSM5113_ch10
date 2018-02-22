@@ -12,7 +12,7 @@ TREE = 1
 BURNING = 2
 
 def main():
-    t = 1
+    t = 10
     n = 10
     probBurning = 0.05
     probTree = 0.8
@@ -40,13 +40,13 @@ def main():
 
     print grids[1]
 
-    rectangle = plt.Rectangle((0.5, 0.5), n - 2, n - 2, fc='none')
-    plt.gca().add_patch(rectangle)
+    #rectangle = plt.Rectangle((0.5, 0.5), n - 2, n - 2, fc='none')
+    #plt.gca().add_patch(rectangle)
     axes = AxesSequence()
     cmap1 = LinearSegmentedColormap.from_list("my_map", ((0, 0, 0), (0, 1, 0), (1, 0, 0)), 3)
     for i, ax in zip(range(t), axes):
-        ax.imshow(grids[i-1], cmap=cmap1, interpolation='nearest')
-        ax.set_title('Time Step '.str(i))
+        ax.imshow(grids[i], cmap=cmap1, interpolation='nearest')
+        ax.set_title("Time Step "+ str(i))
     axes.show()
 
 """
@@ -110,7 +110,7 @@ def applyExtended(grid,probLightning,probImmune):
             E = grid[i,j+1]
             S = grid[i+1,j]
             W = grid[i,j-1]
-            new_grid = spread(site,N,E,S,W,probLightning,probImmune)
+            new_grid[i,j] = spread(site,N,E,S,W,probLightning,probImmune)
     return new_grid
 
 def setForest(grid):
