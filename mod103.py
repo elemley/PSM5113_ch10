@@ -12,11 +12,11 @@ TREE = 1
 BURNING = 2
 
 def main():
-    t = 10
+    t = 50
     n = 10
     probBurning = 0.05
-    probTree = 0.8
-    probImmune = 0.25
+    probTree = 0.6
+    probImmune = 0.40
     probLightning = 0.00001
 
     forest = initForest(n, probTree, probBurning)   #forest is nxn
@@ -25,18 +25,19 @@ def main():
     print forestExtended
 
     grids = []
-    grids.append(forestExtended)    #Each item in grids is (n+2)x(n+2)
+    grids.append(forest)    #Each item in grids is (n+2)x(n+2)
     print grids[0]
 
     for i in range(0, t):
-        forest = setForest(forestExtended)  # set internal cells to current state
+        #forest = setForest(forestExtended)  # set internal cells to current state
         print forest
         old_forestExtended = boundary_donut(forest)  # reset boundaries to donut condition
         print old_forestExtended
         new_forestExtended = applyExtended(old_forestExtended, probLightning, probImmune)
         print new_forestExtended
+        forest = setForest(new_forestExtended)
 
-        grids.append(new_forestExtended)
+        grids.append(forest)
 
     print grids[1]
 
