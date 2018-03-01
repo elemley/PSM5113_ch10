@@ -2,6 +2,7 @@ from math import *
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
+from matplotlib import colors
 from psm_plot import *
 from boundary import *
 from random import *
@@ -12,41 +13,45 @@ TREE = 1
 BURNING = 2
 
 def main():
-    t = 50
-    n = 10
+    t = 10
+    n = 5
     probBurning = 0.05
-    probTree = 0.6
+    probTree = 0.5
     probImmune = 0.40
     probLightning = 0.00001
 
     forest = initForest(n, probTree, probBurning)   #forest is nxn
     print forest
     forestExtended = boundary_donut(forest)         #forestExtended is (n+2)x(n+2)
-    print forestExtended
+    #print forestExtended
 
     grids = []
     grids.append(forest)    #Each item in grids is (n+2)x(n+2)
-    print grids[0]
+    #print grids[0]
 
     for i in range(0, t):
         #forest = setForest(forestExtended)  # set internal cells to current state
-        print forest
+        #print forest
         old_forestExtended = boundary_donut(forest)  # reset boundaries to donut condition
-        print old_forestExtended
+        #print old_forestExtended
         new_forestExtended = applyExtended(old_forestExtended, probLightning, probImmune)
-        print new_forestExtended
-        forest = setForest(new_forestExtended)
+        #print new_forestExtended
+        forest = setForest(new_forestExtended) #returns nxn forest
+        print forest
 
         grids.append(forest)
 
-    print grids[1]
+    #print grids[1]
 
     #rectangle = plt.Rectangle((0.5, 0.5), n - 2, n - 2, fc='none')
     #plt.gca().add_patch(rectangle)
     axes = AxesSequence()
-    cmap1 = LinearSegmentedColormap.from_list("my_map", ((0, 0, 0), (0, 1, 0), (1, 0, 0)), 3)
+    cmap1 = colors.ListedColormap(['black','green', 'red'])
+    bounds=[0,0.99,1,1.99,2]
+    norm=colors.BoundaryNorm(bounds, cmap1.N)
+    #cmap1 = LinearSegmentedColormap.from_list("my_map", cdict1, 3)
     for i, ax in zip(range(t), axes):
-        ax.imshow(grids[i], cmap=cmap1, interpolation='nearest')
+        ax.imshow(grids[i], cmap=cmap1, interpolation='nearest',norm=norm)
         ax.set_title("Time Step "+ str(i))
     axes.show()
 

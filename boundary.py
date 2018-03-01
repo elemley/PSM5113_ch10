@@ -24,16 +24,23 @@ def grid_copy_add_ghost(grid):
 def boundary_donut(grid):
     #takes an nxn grid and returns an (n+2)x(n+2) grid with toroidal BC's applied
     new_grid = grid_copy_add_ghost(grid)
-    rows = len(grid)
-    cols = len(grid[0])
-    for i in range(0,rows): #west
-        new_grid[i,0]=grid[i,cols-2]
-    for i in range(0,rows): #east
-        new_grid[i,cols-1]=grid[i,1]
-    for i in range(0, cols): #north
-        new_grid[0, i] = grid[rows-2, i]
-    for i in range(0, cols): #south
-        new_grid[rows-1, i] = grid[1, i]
+    rows = len(new_grid)
+    cols = len(new_grid[0])
+    #The next part does not set the corners
+    for i in range(1,rows-1): #west
+        print i
+        new_grid[i,0]=grid[i-1,cols-3]
+    for i in range(1,rows-1): #east
+        new_grid[i,cols-1]=grid[i-1,0]
+    for i in range(1, cols-1): #north
+        new_grid[0, i] = grid[rows-3, i-1]
+    for i in range(1, cols-1): #south
+        new_grid[rows-1, i] = grid[0, i-1]
+    #now set corners
+    new_grid[0,0] = grid[rows-3,cols-3]
+    new_grid[0,cols-1] = grid[rows - 3, 0]
+    new_grid[rows-1,0] = grid[0, cols-3]
+    new_grid[rows-1,cols-1] = grid[0,0]
     return new_grid
 
 
