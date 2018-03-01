@@ -11,12 +11,11 @@ from time_step_scrolling import *
 EMPTY = 0
 TREE = 1
 BURNING = 2
-
 def main():
-    t = 10
-    n = 5
+    t = 50
+    n = 100
     probBurning = 0.05
-    probTree = 0.5
+    probTree = 0.7
     probImmune = 0.40
     probLightning = 0.00001
 
@@ -47,13 +46,14 @@ def main():
     #plt.gca().add_patch(rectangle)
     axes = AxesSequence()
     cmap1 = colors.ListedColormap(['black','green', 'red'])
-    bounds=[0,0.99,1,1.99,2]
+    bounds=[0,0.99,1.99,2.99]
     norm=colors.BoundaryNorm(bounds, cmap1.N)
     #cmap1 = LinearSegmentedColormap.from_list("my_map", cdict1, 3)
     for i, ax in zip(range(t), axes):
         ax.imshow(grids[i], cmap=cmap1, interpolation='nearest',norm=norm)
         ax.set_title("Time Step "+ str(i))
     axes.show()
+
 
 """
     # print forest
