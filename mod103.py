@@ -1,4 +1,5 @@
 from math import *
+import time
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
@@ -8,19 +9,22 @@ from boundary import *
 from random import *
 from time_step_scrolling import *
 
+start_time = time.time()
+
 EMPTY = 0
 TREE = 1
 BURNING = 2
+
 def main():
     t = 50
-    n = 100
-    probBurning = 0.05
+    n = 500
+    probBurning = 0.00001
     probTree = 0.7
     probImmune = 0.40
     probLightning = 0.00001
 
     forest = initForest(n, probTree, probBurning)   #forest is nxn
-    print forest
+    #print forest
     forestExtended = boundary_donut(forest)         #forestExtended is (n+2)x(n+2)
     #print forestExtended
 
@@ -36,7 +40,7 @@ def main():
         new_forestExtended = applyExtended(old_forestExtended, probLightning, probImmune)
         #print new_forestExtended
         forest = setForest(new_forestExtended) #returns nxn forest
-        print forest
+        #print forest
 
         grids.append(forest)
 
@@ -149,3 +153,4 @@ axes.show()
 """
 if __name__ == '__main__':
     main()
+print ("--- %s seconds ---" % (time.time() - start_time))

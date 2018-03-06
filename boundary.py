@@ -28,7 +28,7 @@ def boundary_donut(grid):
     cols = len(new_grid[0])
     #The next part does not set the corners
     for i in range(1,rows-1): #west
-        print i
+        #print i
         new_grid[i,0]=grid[i-1,cols-3]
     for i in range(1,rows-1): #east
         new_grid[i,cols-1]=grid[i-1,0]
