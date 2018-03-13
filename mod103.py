@@ -18,7 +18,7 @@ BURNING = 2
 def main():
     t = 50
     n = 500
-    probBurning = 0.00001
+    probBurning = 0.001
     probTree = 0.7
     probImmune = 0.40
     probLightning = 0.00001
